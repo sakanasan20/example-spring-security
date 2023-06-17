@@ -11,4 +11,9 @@ public class IndexController {
 		return "index";
 	}
 	
+	@GetMapping("/authenticated")
+	public String authenticated() {
+		return "authenticated";
+	}
+	
 }

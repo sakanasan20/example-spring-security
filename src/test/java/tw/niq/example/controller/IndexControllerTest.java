@@ -41,22 +41,22 @@ class IndexControllerTest {
 
 	@WithMockUser("admin")
 	@Test
-	void testIndex_withAdminUser() throws Exception {
-		mockMvc.perform(get("/"))
+	void testAuthenticated_withAdminUser() throws Exception {
+		mockMvc.perform(get("/authenticated"))
 			.andExpect(status().isOk())
-			.andExpect(view().name("index"));
+			.andExpect(view().name("authenticated"));
 	}
 	
 	@Test
-	void testIndex_withAdminCredentials() throws Exception {
-		mockMvc.perform(get("/").with(httpBasic("admin", "admin")))
+	void testAuthenticated_withAdminCredentials() throws Exception {
+		mockMvc.perform(get("/authenticated").with(httpBasic("admin", "admin")))
 			.andExpect(status().isOk())
-			.andExpect(view().name("index"));
+			.andExpect(view().name("authenticated"));
 	}
 	
 	@Test
-	void testIndex_withBadAdminCredentials() throws Exception {
-		mockMvc.perform(get("/").with(httpBasic("admin", "wrong_password")))
+	void testAuthenticated_withBadAdminCredentials() throws Exception {
+		mockMvc.perform(get("/authenticated").with(httpBasic("admin", "wrong_password")))
 			.andExpect(status().isUnauthorized());
 	}
 
