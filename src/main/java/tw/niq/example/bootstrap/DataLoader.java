@@ -1,5 +1,7 @@
 package tw.niq.example.bootstrap;
 
+import java.util.Arrays;
+
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -31,17 +33,28 @@ public class DataLoader implements CommandLineRunner {
 
 		AuthorityEntity adminAuthority = authorityRepository.save(
 				AuthorityEntity.builder()
-					.role("ADMIN")
+					.role("ROLE_ADMIN")
+					.build());
+		
+		AuthorityEntity userAuthority = authorityRepository.save(
+				AuthorityEntity.builder()
+					.role("ROLE_USER")
 					.build());
 
 		log.debug("Authority loaded: " + authorityRepository.count());
 		
-		userRepository.save(
+		userRepository.saveAll(Arrays.asList(
 				UserEntity.builder()
 					.username("admin")
 					.password(passwordEncoder.encode("admin"))
 					.authority(adminAuthority)
-					.build());
+					.build(), 
+				UserEntity.builder()
+					.username("user")
+					.password(passwordEncoder.encode("user"))
+					.authority(userAuthority)
+					.build()
+		));
 		
 		log.debug("User loaded: " + userRepository.count());
 	}
