@@ -9,13 +9,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-@WebMvcTest
+//@WebMvcTest
+@SpringBootTest
 class IndexControllerTest {
 	
 	@Autowired
@@ -29,6 +30,13 @@ class IndexControllerTest {
 				.webAppContextSetup(webApplicationContext)
 				.apply(springSecurity())
 				.build();
+	}
+	
+	@Test
+	void testIndex() throws Exception {
+		mockMvc.perform(get("/"))
+			.andExpect(status().isOk())
+			.andExpect(view().name("index"));
 	}
 
 	@WithMockUser("admin")
@@ -48,7 +56,7 @@ class IndexControllerTest {
 	
 	@Test
 	void testIndex_withBadAdminCredentials() throws Exception {
-		mockMvc.perform(get("/").with(httpBasic("admin", "password")))
+		mockMvc.perform(get("/").with(httpBasic("admin", "wrong_password")))
 			.andExpect(status().isUnauthorized());
 	}
 
