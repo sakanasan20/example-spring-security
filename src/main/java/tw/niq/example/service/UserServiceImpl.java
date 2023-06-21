@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import tw.niq.example.entity.AuthorityEntity;
+import tw.niq.example.entity.RoleEntity;
 import tw.niq.example.entity.UserEntity;
 import tw.niq.example.repository.UserRepository;
 
@@ -37,19 +38,33 @@ public class UserServiceImpl implements UserService {
 				userEntity.getAccountNonExpired(), 
 				userEntity.getCredentialsNonExpired(), 
 				userEntity.getAccountNonLocked(), 
-				convertToGrandAuthority(userEntity.getAuthorities()));
+				convertToGrandAuthority(userEntity));
 	}
 
-	private Collection<? extends GrantedAuthority> convertToGrandAuthority(Set<AuthorityEntity> authorities) {
+	private Collection<? extends GrantedAuthority> convertToGrandAuthority(UserEntity userEntity) {
 		
-		if (authorities != null && authorities.size() > 0) {
-			return authorities.stream()
-					.map(AuthorityEntity::getRole)
+		Set<RoleEntity> roles = userEntity.getRoles();
+		
+		Set<AuthorityEntity> authorities = userEntity.getAuthorities();
+		
+		Set<SimpleGrantedAuthority> simpleGrantedAuthorities = new HashSet<>();
+		
+		if (roles != null && roles.size() > 0) {
+			simpleGrantedAuthorities.addAll(roles.stream()
+					.map(RoleEntity::getRole)
+					.map(role -> "ROLE_" + role)
 					.map(SimpleGrantedAuthority::new)
-					.collect(Collectors.toSet());
+					.collect(Collectors.toSet()));
 		}
 		
-		return new HashSet<>();
+		if (authorities != null && authorities.size() > 0) {
+			simpleGrantedAuthorities.addAll(authorities.stream()
+					.map(AuthorityEntity::getPermission)
+					.map(SimpleGrantedAuthority::new)
+					.collect(Collectors.toSet()));
+		}
+		
+		return simpleGrantedAuthorities;
 	}
 
 }

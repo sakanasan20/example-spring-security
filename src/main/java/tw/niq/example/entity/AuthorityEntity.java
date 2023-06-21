@@ -25,9 +25,9 @@ public class AuthorityEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private String role;
+	private String permission;
 	
 	@ManyToMany(mappedBy = "authorities")
-	private Set<UserEntity> users;
+	private Set<RoleEntity> roles;
 	
 }
