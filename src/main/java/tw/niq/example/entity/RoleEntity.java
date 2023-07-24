@@ -13,6 +13,7 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -23,6 +24,7 @@ import lombok.Singular;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EqualsAndHashCode
 @Entity
 public class RoleEntity {
 	
@@ -32,9 +34,11 @@ public class RoleEntity {
 	
 	private String role;
 	
+	@EqualsAndHashCode.Exclude
 	@ManyToMany(mappedBy = "roles")
 	private Set<UserEntity> users;
 	
+	@EqualsAndHashCode.Exclude
 	@Singular
 	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
 	@JoinTable(name = "role_authoriry", 

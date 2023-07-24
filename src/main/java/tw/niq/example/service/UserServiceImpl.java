@@ -39,4 +39,30 @@ public class UserServiceImpl implements UserService {
 		return users;
 	}
 
+	@Override
+	public UserDto readUserByUserId(Long userId) {
+		
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		
+		UserEntity userEntity = userRepository.findById(userId).orElseThrow(()-> new RuntimeException());
+		
+		UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+		
+		return userDto;
+	}
+
+	@Override
+	public UserDto readUserByUserName(String username) {
+
+		ModelMapper modelMapper = new ModelMapper();
+		modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
+		
+		UserEntity userEntity = userRepository.findByUsernameSecured(username).orElseThrow(()-> new RuntimeException());
+		
+		UserDto userDto = modelMapper.map(userEntity, UserDto.class);
+		
+		return userDto;
+	}
+
 }

@@ -10,4 +10,8 @@ public interface UserService extends UserDetailsService {
 
 	List<UserDto> readAllUsers();
 
+	UserDto readUserByUserId(Long userId);
+
+	UserDto readUserByUserName(String username);
+
 }
