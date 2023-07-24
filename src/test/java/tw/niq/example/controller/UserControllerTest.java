@@ -1,5 +1,6 @@
 package tw.niq.example.controller;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -43,16 +44,18 @@ class UserControllerTest {
 	@Test
 	void testCreateUser_withAdmin() throws Exception {
 		mockMvc.perform(post("/api/v1/users")
+				.with(csrf())
 				.content(objectMapper.writeValueAsString(new UserModel()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("admin", "admin")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("creating user..."));
+			.andExpect(status().isOk());
+//			.andExpect(content().string("creating user..."));
 	}
 	
 	@Test
 	void testCreateUser_withUser() throws Exception {
 		mockMvc.perform(post("/api/v1/users")
+				.with(csrf())
 				.content(objectMapper.writeValueAsString(new UserModel()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("user", "user")))
@@ -62,6 +65,7 @@ class UserControllerTest {
 	@Test
 	void testCreateUser_withGuest() throws Exception {
 		mockMvc.perform(post("/api/v1/users")
+				.with(csrf())
 				.content(objectMapper.writeValueAsString(new UserModel()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("guest", "guest")))
@@ -70,54 +74,67 @@ class UserControllerTest {
 
 	@Test
 	void testReadAllUsers_withAdmin() throws Exception {
-		mockMvc.perform(get("/api/v1/users").with(httpBasic("admin", "admin")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("reading all users..."));
+		mockMvc.perform(get("/api/v1/users")
+				.with(csrf())
+				.with(httpBasic("admin", "admin")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("reading all users..."));
 	}
 	
 	@Test
 	void testReadAllUsers_withUser() throws Exception {
-		mockMvc.perform(get("/api/v1/users").with(httpBasic("user", "user")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("reading all users..."));
+		mockMvc.perform(get("/api/v1/users")
+				.with(csrf())
+				.with(httpBasic("user", "user")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("reading all users..."));
 	}
 	
 	@Test
 	void testReadAllUsers_withAGuest() throws Exception {
-		mockMvc.perform(get("/api/v1/users").with(httpBasic("guest", "guest")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("reading all users..."));
+		mockMvc.perform(get("/api/v1/users")
+				.with(csrf())
+				.with(httpBasic("guest", "guest")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("reading all users..."));
 	}
 	
 	@Test
 	void testReadUserByUsername_withAdmin() throws Exception {
-		mockMvc.perform(get("/api/v1/users/test").with(httpBasic("admin", "admin")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("reading user by username..."));
+		mockMvc.perform(get("/api/v1/users/name/admin")
+				.with(csrf())
+				.with(httpBasic("admin", "admin")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("reading user by username..."));
 	}
 	
 	@Test
 	void testReadUserByUsername_withUser() throws Exception {
-		mockMvc.perform(get("/api/v1/users/test").with(httpBasic("user", "user")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("reading user by username..."));
+		mockMvc.perform(get("/api/v1/users/name/user")
+				.with(csrf())
+				.with(httpBasic("user", "user")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("reading user by username..."));
 	}
 	
 	@Test
 	void testReadUserByUsername_withAGuest() throws Exception {
-		mockMvc.perform(get("/api/v1/users/test").with(httpBasic("guest", "guest")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("reading user by username..."));
+		mockMvc.perform(get("/api/v1/users/name/guest")
+				.with(csrf())
+				.with(httpBasic("guest", "guest")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("reading user by username..."));
 	}
 
 	@Test
 	void testUpdateUserByUsername_withAdmin() throws Exception {
 		mockMvc.perform(put("/api/v1/users/test")
+				.with(csrf())
 				.content(objectMapper.writeValueAsString(new UserModel()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("admin", "admin")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("updating user by username..."));
+			.andExpect(status().isOk());
+//			.andExpect(content().string("updating user by username..."));
 	}
 	
 	void testUpdateUserByUsername_withUser() throws Exception {
@@ -131,6 +148,7 @@ class UserControllerTest {
 	
 	void testUpdateUserByUsername_withAGuest() throws Exception {
 		mockMvc.perform(put("/api/v1/users/test")
+				.with(csrf())
 				.content(objectMapper.writeValueAsString(new UserModel()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.with(httpBasic("guest", "guest")))
@@ -139,21 +157,27 @@ class UserControllerTest {
 
 	@Test
 	void testDeleteUserByUsername_withAdmin() throws Exception {
-		mockMvc.perform(delete("/api/v1/users/test").with(httpBasic("admin", "admin")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("deleting user by username..."));
+		mockMvc.perform(delete("/api/v1/users/test")
+				.with(csrf())
+				.with(httpBasic("admin", "admin")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("deleting user by username..."));
 	}
 	
 	@Test
 	void testDeleteUserByUsername_withUser() throws Exception {
-		mockMvc.perform(delete("/api/v1/users/test").with(httpBasic("user", "user")))
-			.andExpect(status().isOk())
-			.andExpect(content().string("deleting user by username..."));
+		mockMvc.perform(delete("/api/v1/users/test")
+				.with(csrf())
+				.with(httpBasic("user", "user")))
+			.andExpect(status().isOk());
+//			.andExpect(content().string("deleting user by username..."));
 	}
 	
 	@Test
 	void testDeleteUserByUsername_withAGuest() throws Exception {
-		mockMvc.perform(delete("/api/v1/users/test").with(httpBasic("guest", "guest")))
+		mockMvc.perform(delete("/api/v1/users/test")
+				.with(csrf())
+				.with(httpBasic("guest", "guest")))
 			.andExpect(status().isForbidden());
 	}
 

@@ -10,18 +10,21 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.data.repository.query.SecurityEvaluationContextExtension;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import lombok.RequiredArgsConstructor;
+import tw.niq.example.service.UserService;
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class WebSecurity {
 	
-	@Bean
-	public SecurityEvaluationContextExtension securityEvaluationContextExtension() {
-		return new SecurityEvaluationContextExtension();
-	}
+	private final UserService userService;
+	private final PersistentTokenRepository persistentTokenRepository;
 
 	@Bean
 	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -50,10 +53,30 @@ public class WebSecurity {
 //				.requestMatchers("/authenticatedAsAnyRole").hasAnyRole("ADMIN", "USER")
 				.anyRequest().authenticated())
 			.authenticationManager(authenticationManager)
-			.csrf((csrf) -> csrf.disable())
+			.csrf((csrf) ->
+				csrf.disable()
+//				csrf.ignoringRequestMatchers("/", "/webjars/**", "/login", "/resources/**", "/h2-console/**")
+				)
 			.headers((headers) -> headers.frameOptions((frameOptions) -> frameOptions.disable()))
-			.formLogin(Customizer.withDefaults())
-			.httpBasic(Customizer.withDefaults());
+			.formLogin(formLoginCustomizer -> 
+				formLoginCustomizer
+					.loginProcessingUrl("/login")
+					.loginPage("/").permitAll()
+					.successForwardUrl("/")
+					.defaultSuccessUrl("/")
+					.failureUrl("/?error"))
+			.logout(logoutCustomizer -> 
+				logoutCustomizer
+					.logoutRequestMatcher(new AntPathRequestMatcher("/logout", "GET"))
+					.logoutSuccessUrl("/?logout").permitAll())
+			.httpBasic(Customizer.withDefaults())
+			.rememberMe(rememberMeCustomizer -> 
+//				rememberMeCustomizer
+//					.key("mykey")
+//					.userDetailsService(userService)
+				rememberMeCustomizer
+					.tokenRepository(persistentTokenRepository)
+					.userDetailsService(userService));
 		
 		return http.build();
 	}

@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html 
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
 <head>
 	<meta charset="utf-8">
 	<title>Security</title>
@@ -9,6 +12,32 @@
 <body>
 	<div class="container-fluid">
 		<h1 th:text="'index'"></h1>
+		<div class="row">
+			<div class="col-md-12">
+				<div th:if="${param.error}" class="alert alert-danger">Invalid username or password</div>
+				<div th:if="${param.logout}" class="alert alert-success">You have logged out</div>
+				<form th:action="@{/login}" method="POST">
+					<label for="username">Username:</label>
+					<input type="text" id="username" name="username" autofocus autocomplete="off">
+					<label for="password">Password</label>
+					<input type="password" id="password" name="password" autocomplete="off">
+					<input type="submit" value="Login">
+					<label for="remember-me">Remember me:</label>
+					<input type="checkbox" id="remember-me" name="remember-me">
+				</form>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				<p sec:authorize="isAuthenticated()" th:text="'Welcome ' + ${#authentication?.principal?.username}">User</p>
+				<p sec:authorize="isAuthenticated()"><a th:href="@{/logout}">Logout</a></p>
+				<p sec:authorize="hasRole('ADMIN')">ADMIN MODE</p>
+				<p sec:authorize="hasAuthority('user.create')">- CREATE USER PERMISSION</p>
+				<p sec:authorize="hasAuthority('user.read')">- READ USER PERMISSION</p>
+				<p sec:authorize="hasAuthority('user.update')">- UPDATE USER PERMISSION</p>
+				<p sec:authorize="hasAuthority('user.delete')">- DELETE USER PERMISSION</p>
+			</div>
+		</div>
 	</div>
 	<script th:fragment="bootstrap-script" th:src="@{/webjars/bootstrap/5.3.0/dist/js/bootstrap.bundle.min.js}"></script>
 </body>
