@@ -60,6 +60,15 @@ public class UserEntity implements UserDetails, CredentialsContainer {
 	@Builder.Default
 	private Boolean enabled = true;
 	
+	@Builder.Default
+	private Boolean google2faEnabled = false;
+	
+	private String google2faSecret;
+	
+	@Builder.Default
+	@Transient
+	private Boolean google2faNonVerified = true;
+	
 	@CreationTimestamp
 	@Column(updatable = false)
 	private Timestamp createdDate;

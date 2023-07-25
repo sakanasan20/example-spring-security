@@ -12,10 +12,12 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.rememberme.PersistentTokenRepository;
+import org.springframework.security.web.session.SessionManagementFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import lombok.RequiredArgsConstructor;
 import tw.niq.example.security.CustomPasswordEncoderFactories;
+import tw.niq.example.security.Google2faFilter;
 import tw.niq.example.service.UserService;
 
 @RequiredArgsConstructor
@@ -26,6 +28,7 @@ public class WebSecurityConfig {
 	
 	private final UserService userService;
 	private final PersistentTokenRepository persistentTokenRepository;
+	private final Google2faFilter google2faFilter;
 
 	@Bean
 	protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
@@ -45,6 +48,8 @@ public class WebSecurityConfig {
 //			.roles("ADMIN");
 		
 		AuthenticationManager authenticationManager = authenticationManagerBuilder.build();
+		
+		http.addFilterBefore(google2faFilter, SessionManagementFilter.class);
 		
 		http.authorizeHttpRequests((authorize) -> authorize
 				.requestMatchers(PathRequest.toH2Console()).permitAll()
