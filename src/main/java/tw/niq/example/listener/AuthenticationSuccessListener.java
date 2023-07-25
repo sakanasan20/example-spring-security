@@ -1,4 +1,4 @@
-package tw.niq.example.config;
+package tw.niq.example.listener;
 
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

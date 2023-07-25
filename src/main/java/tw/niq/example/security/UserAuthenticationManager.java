@@ -1,4 +1,4 @@
-package tw.niq.example.config;
+package tw.niq.example.security;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;

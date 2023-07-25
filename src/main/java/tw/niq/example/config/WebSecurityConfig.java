@@ -15,13 +15,14 @@ import org.springframework.security.web.authentication.rememberme.PersistentToke
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import lombok.RequiredArgsConstructor;
+import tw.niq.example.security.CustomPasswordEncoderFactories;
 import tw.niq.example.service.UserService;
 
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity(securedEnabled = true, prePostEnabled = true)
-public class WebSecurity {
+public class WebSecurityConfig {
 	
 	private final UserService userService;
 	private final PersistentTokenRepository persistentTokenRepository;

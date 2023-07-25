@@ -1,4 +1,4 @@
-package tw.niq.example.config;
+package tw.niq.example.security;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;

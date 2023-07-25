@@ -1,4 +1,4 @@
-package tw.niq.example.config;
+package tw.niq.example.beans;
 
 import javax.sql.DataSource;
 

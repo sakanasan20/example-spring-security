@@ -1,4 +1,4 @@
-package tw.niq.example.config;
+package tw.niq.example.security;
 
 import java.util.HashMap;
 import java.util.Map;
