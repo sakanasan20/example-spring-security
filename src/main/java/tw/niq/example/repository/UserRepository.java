@@ -1,5 +1,7 @@
 package tw.niq.example.repository;
 
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -17,5 +19,7 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
 		+ "AND true = :#{hasAuthority('user.read')} "
 		+ "AND ue.id = ?#{principal?.id} ")
 	Optional<UserEntity> findByUsernameSecured(String username);
+	
+	List<UserEntity> findAllByAccountNonLockedAndLastModifiedDateIsBefore(Boolean accountNonLocked, Timestamp timestamp);
 	
 }

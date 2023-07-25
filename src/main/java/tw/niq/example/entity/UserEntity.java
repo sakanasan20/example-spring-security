@@ -1,15 +1,19 @@
 package tw.niq.example.entity;
 
+import java.sql.Timestamp;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.CredentialsContainer;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -43,6 +47,25 @@ public class UserEntity implements UserDetails, CredentialsContainer {
 	private String password;
 
 	private String username;
+
+	@Builder.Default
+	private Boolean accountNonExpired = true;
+
+	@Builder.Default
+	private Boolean accountNonLocked = true;
+
+	@Builder.Default
+	private Boolean credentialsNonExpired = true;
+
+	@Builder.Default
+	private Boolean enabled = true;
+	
+	@CreationTimestamp
+	@Column(updatable = false)
+	private Timestamp createdDate;
+	
+	@UpdateTimestamp
+	private Timestamp lastModifiedDate;
 	
 	@Singular
 	@ManyToMany(cascade = { CascadeType.MERGE, CascadeType.PERSIST }, fetch = FetchType.EAGER)
@@ -50,7 +73,7 @@ public class UserEntity implements UserDetails, CredentialsContainer {
 		joinColumns = { @JoinColumn(name = "user_id", referencedColumnName = "id") }, 
 		inverseJoinColumns = { @JoinColumn(name = "role_id", referencedColumnName = "id") })
 	private Set<RoleEntity> roles;
-
+	
 	@Transient
 	public Set<GrantedAuthority> getAuthorities() {
 
@@ -77,18 +100,6 @@ public class UserEntity implements UserDetails, CredentialsContainer {
 		
 		return grantedAuthorities;
 	}
-
-	@Builder.Default
-	private Boolean accountNonExpired = true;
-
-	@Builder.Default
-	private Boolean accountNonLocked = true;
-
-	@Builder.Default
-	private Boolean credentialsNonExpired = true;
-
-	@Builder.Default
-	private Boolean enabled = true;
 
 	@Override
 	public boolean isAccountNonExpired() {
